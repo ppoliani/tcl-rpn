@@ -90,6 +90,4 @@ const opts = {
   ]
 }
 
-console.log(rpn('A AND B OR ( C AND D )', opts));
-
 module.exports = {rpn};
