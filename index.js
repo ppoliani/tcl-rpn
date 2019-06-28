@@ -5,7 +5,6 @@ const getPrecedence = (operators, token) => {
   if(token === '(') return 0;
   return operators.find(o => o.name === token).precedence;
 }
-const isStackEmpty = stack => stack.length ==- 0;
 
 const stateTransition = (stack, result) => ({stack, result});
 
@@ -67,7 +66,7 @@ const reduceExpression = (stack, result) => {
   return result.join(' ');
 }
 
-const rpn = (expression, options) => {
+const rpn = (expression, options={}) => {
   const {operators =  [
     {name: 'AND', precedence: 1},
     {name: 'OR', precedence: 1}
