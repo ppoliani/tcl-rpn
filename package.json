@@ -1,5 +1,5 @@
 {
-  "name": "rpn-expression",
+  "name": "tcl-rpn",
   "version": "1.0.0",
   "description": "A helper lib that deals with RPN expressions",
   "main": "index.js",
