@@ -1,7 +1,7 @@
 {
   "name": "tcl-rpn",
   "version": "1.0.0",
-  "description": "A helper lib that deals with RPN expressions",
+  "description": "A library that deals with RPN expressions suitable for the TCL compliance protocol",
   "main": "index.js",
   "repository": "git@github.com:ppoliani/rpn-expression.git",
   "author": "ppoliani <ppoliani@gmail.com>",
