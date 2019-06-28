@@ -1,8 +1,7 @@
-const partial = (fn, ...args) => (...restArgs) => fn.apply(this, args.concat(restArgs));
 const tokenize = expression => expression.split(' ');
 
-const isOperator = (operators, token) => Boolean(operators.find(token));
-const getPrecedence = operator => operator.precedence;
+const isOperator = (operators, token) => Boolean(operators.find(o => o.name === token));
+const getPrecedence = (operators, token) => operators.find(o => o.name === token).precedence;
 const isStackEmpty = stack => stack.length ==- 0;
 
 const stateTransition = (stack, result) => ({stack, result});
@@ -14,7 +13,7 @@ const processToken = (
   token
 ) => {
   if(isOperator(operators, token)) {
-    return processOperator(token);
+    return processOperator(operators, stack, result, token);
   }
   if(token === '(') {
     return stateTransition(stack, processOpeningParenthesis(stack, token)) 
@@ -27,15 +26,12 @@ const processToken = (
   }
 }
 
-const processOperator = (stack, result, token) => {
-  while (!isStackEmpty()) {
+const processOperator = (operators, stack, result, token) => {
+  while (!isStackEmpty(stack)) {
     const topItem = stack.pop();
 
-    if(getPrecedence(token) >= getPrecedence(topItem)) {
-      return {
-        stack,
-        result: [...result, topItem]
-      }
+    if(getPrecedence(operators, token) >= getPrecedence(operators, topItem)) {
+      result = [...result, topItem];
     }
   }
 
@@ -60,7 +56,7 @@ const processClosingParenthesis = (stack, result) => {
   item = stack.pop();
 }
 
-const createRpnExpression = (stack, result) => {
+const reduceExpression = (stack, result) => {
   while (stack.length) {
     result = [...result, stack.pop()]
   }
@@ -74,11 +70,23 @@ const rpn = (expression, options) => {
   let result = [];
   let stack = [];
 
-  tokenize(tokens).forEach(token => {
-    ({result, stack}) = processToken(operators, stack, result, token);
+  tokenize(expression).forEach(token => {
+    const ret = processToken(operators, stack, result, token);
+
+    result = ret.result;
+    stack = ret.stack;
   });
 
-  return createRpnExpression(stack);
+  return reduceExpression(stack, result);
 }
+
+const opts = {
+  operators: [
+    {name: 'AND', precedence: 1},
+    {name: 'OR', precedence: 1}
+  ]
+}
+
+console.log(rpn('A AND B OR (C AND D)', opts));
 
 module.exports = {rpn};
