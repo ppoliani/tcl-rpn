@@ -68,7 +68,10 @@ const reduceExpression = (stack, result) => {
 }
 
 const rpn = (expression, options) => {
-  const {operators = ['*','/','+','-']} = options;
+  const {operators =  [
+    {name: 'AND', precedence: 1},
+    {name: 'OR', precedence: 1}
+  ]} = options;
 
   let result = [];
   let stack = [];
@@ -81,13 +84,6 @@ const rpn = (expression, options) => {
   });
 
   return reduceExpression(stack, result);
-}
-
-const opts = {
-  operators: [
-    {name: 'AND', precedence: 1},
-    {name: 'OR', precedence: 1}
-  ]
 }
 
 module.exports = {rpn};
