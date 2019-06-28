@@ -1,7 +1,10 @@
 const tokenize = expression => expression.split(' ');
 
 const isOperator = (operators, token) => Boolean(operators.find(o => o.name === token));
-const getPrecedence = (operators, token) => operators.find(o => o.name === token).precedence;
+const getPrecedence = (operators, token) => {
+  if(token === '(') return 0;
+  return operators.find(o => o.name === token).precedence;
+}
 const isStackEmpty = stack => stack.length ==- 0;
 
 const stateTransition = (stack, result) => ({stack, result});
@@ -16,23 +19,24 @@ const processToken = (
     return processOperator(operators, stack, result, token);
   }
   if(token === '(') {
-    return stateTransition(stack, processOpeningParenthesis(stack, token)) 
+    return stateTransition(processOpeningParenthesis(stack, token), result);
   }
   if(token === ')') {
-    processClosingParenthesis();
+    return processClosingParenthesis(stack, result);
   }
   else {
     return stateTransition(stack, processOperand(result, token))
   }
 }
 
-const processOperator = (operators, stack, result, token) => {
-  while (!isStackEmpty(stack)) {
-    const topItem = stack.pop();
+const peek = stack => stack[stack.length - 1];
 
-    if(getPrecedence(operators, token) >= getPrecedence(operators, topItem)) {
-      result = [...result, topItem];
-    }
+const processOperator = (operators, stack, result, token) => {
+  let topItem = peek(stack);
+
+  while (isOperator(operators, topItem) && getPrecedence(operators, topItem) >= getPrecedence(operators, token)) {
+    result = [...result, stack.pop()];
+    topItem = peek(stack);
   }
 
   return {
@@ -46,14 +50,13 @@ const processOperand = (result, token) => [...result, token];;
 const processOpeningParenthesis = (stack, token) => [...stack, token];
 
 const processClosingParenthesis = (stack, result) => {
-  let item = stack.pop();
-
-  while (item !== '(') {
-    result = [...result, item];
-    item = stack.pop();
+  while (peek(stack) !== '(') {
+    result = [...result, stack.pop()];
   }
 
-  item = stack.pop();
+  stack.pop();
+
+  return {stack, result};
 }
 
 const reduceExpression = (stack, result) => {
@@ -87,6 +90,6 @@ const opts = {
   ]
 }
 
-console.log(rpn('A AND B OR (C AND D)', opts));
+console.log(rpn('A AND B OR ( C AND D )', opts));
 
 module.exports = {rpn};
