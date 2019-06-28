@@ -1,0 +1,9 @@
+{
+  "name": "rpn-expression",
+  "version": "1.0.0",
+  "description": "A helper lib that deals with RPN expressions",
+  "main": "index.js",
+  "repository": "git@github.com:ppoliani/rpn-expression.git",
+  "author": "ppoliani <ppoliani@gmail.com>",
+  "license": "MIT"
+}
