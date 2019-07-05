@@ -69,7 +69,7 @@ const reduceExpression = (stack, result) => {
   return result.join(' ');
 }
 
-const postfix = (expression, options={}) => {
+const postfix = (infix, options={}) => {
   const {operators =  [
     {name: 'AND', precedence: 1},
     {name: 'OR', precedence: 1}
@@ -78,7 +78,7 @@ const postfix = (expression, options={}) => {
   let result = [];
   let stack = [];
 
-  tokenize(expression).forEach(token => {
+  tokenize(infix).forEach(token => {
     const ret = processToken(operators, stack, result, token);
 
     result = ret.result;
@@ -88,7 +88,7 @@ const postfix = (expression, options={}) => {
   return reduceExpression(stack, result);
 }
 
-const infix = (expression, options={}) => {
+const infix = (postfix, options={}) => {
   const {operators =  [
     {name: 'AND', precedence: 1},
     {name: 'OR', precedence: 1}
@@ -96,14 +96,27 @@ const infix = (expression, options={}) => {
 
   let stack = [];
 
-  tokenize(expression).forEach(token => {
+  tokenize(postfix).forEach(token => {
     if(!isOperator(operators, token)) {
       stack = push(stack, token);
     }
     else {
-      const topItem = pop(stack);
-      const pushVal = `(${pop(stack)} ${token} ${topItem})`;
-      stack = push(stack, pushVal);
+      let firstItem = pop(stack);
+      let secondItem = pop(stack);
+
+      const operandOneOperator = firstItem.split(' ')[1];
+      const operandTwoOperator = secondItem.split(' ')[1];
+
+      if(!!operandTwoOperator && getPrecedence(operators, operandTwoOperator) < getPrecedence(operators, token)) {
+        secondItem = `( ${secondItem} )`
+      }
+
+      if(!!operandOneOperator && getPrecedence(operators, operandOneOperator) <= getPrecedence(operators, token)) {
+        firstItem = `( ${firstItem} )`
+      }
+
+      const result = `${secondItem} ${token} ${firstItem}`;
+      stack = push(stack, result);
     }
   });
 
@@ -112,6 +125,12 @@ const infix = (expression, options={}) => {
 
 console.log(postfix('A AND B OR ( C AND D )')) // A B AND C D AND OR postfix
 console.log(infix('A B AND C D AND OR')) // A AND B OR ( C AND D ) infix
+
+console.log(postfix('A AND B OR ( C AND D ) AND ( F OR D )'))
+console.log(infix('A B AND C D AND OR F D OR AND'));
+
+console.log(postfix('A AND ( B OR C ) AND D'))
+console.log(infix('A B C OR AND D AND'));
 
 module.exports = {
   postfix,
