@@ -11,7 +11,14 @@ yarn add tcl-rpn
 # Usage
 
 ```
-rpn('A AND B OR ( C AND D )')
+console.log(postfix('A AND B OR ( C AND D )')) // A B AND C D AND OR postfix
+console.log(infix('A B AND C D AND OR')) // A AND B OR ( C AND D ) infix
+
+console.log(postfix('A AND B OR ( C AND D ) AND ( F OR D )'))
+console.log(infix('A B AND C D AND OR F D OR AND'));
+
+console.log(postfix('A AND ( B OR C ) AND D'))
+console.log(infix('A B C OR AND D AND'));
 ```
 
 Currently it supports the `AND` and `OR` operators. 
