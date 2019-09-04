@@ -124,8 +124,6 @@ const postfix = (infix, options={}) => {
 
 }
 
-console.log(postfix('A AND ( B OR C ) AND D'))
-
 const infix = (postfix, options={}) => {
   const {operators =  [
     {name: 'AND', precedence: 1},
