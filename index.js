@@ -84,7 +84,7 @@ const validatePostfix = (expr, operators) => {
     return ret;
   }
 
-  tokenize(expr).reduce((counter, token) => {
+  const counter = tokenize(expr).reduce((counter, token) => {
     switch(true) {
       case isOperator(operators, token):
         counter = decrement(counter);
@@ -96,6 +96,10 @@ const validatePostfix = (expr, operators) => {
         return increment(counter);
     }
   }, 0)
+
+  if(counter !== 1) {
+    throwError();
+  }
 
   return expr;
 }
@@ -119,6 +123,8 @@ const postfix = (infix, options={}) => {
   return validatePostfix(reduceExpression(stack, result), operators);
 
 }
+
+console.log(postfix('A AND ( B OR C ) AND D'))
 
 const infix = (postfix, options={}) => {
   const {operators =  [
