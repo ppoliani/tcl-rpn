@@ -69,6 +69,38 @@ const reduceExpression = (stack, result) => {
   return result.join(' ');
 }
 
+const validatePostfix = (expr, operators) => {
+  const throwError = () => {
+    throw new Error('Invalid expression');
+  }
+
+  const increment = counter => counter + 1;
+  const decrement = counter => {
+    let ret = counter - 1;
+
+    if(ret < 0) {
+      throwError();
+    }
+
+    return ret;
+  }
+
+  tokenize(expr).reduce((counter, token) => {
+    switch(true) {
+      case isOperator(operators, token):
+        counter = decrement(counter);
+        counter = decrement(counter);
+        return increment(counter);
+      case token === '(' || token === ')':
+        throwError();
+      default:
+        return increment(counter);
+    }
+  }, 0)
+
+  return expr;
+}
+
 const postfix = (infix, options={}) => {
   const {operators =  [
     {name: 'AND', precedence: 1},
@@ -85,7 +117,8 @@ const postfix = (infix, options={}) => {
     stack = ret.stack;
   });
 
-  return reduceExpression(stack, result);
+  return validatePostfix(reduceExpression(stack, result), operators);
+
 }
 
 const infix = (postfix, options={}) => {
