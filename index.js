@@ -14,17 +14,16 @@ const processToken = (
   result, 
   token
 ) => {
-  if(isOperator(operators, token)) {
-    return processOperator(operators, stack, result, token);
-  }
-  if(token === '(') {
-    return stateTransition(processOpeningParenthesis(stack, token), result);
-  }
-  if(token === ')') {
-    return processClosingParenthesis(stack, result);
-  }
-  else {
-    return stateTransition(stack, processOperand(result, token))
+  switch(true) {
+    case isOperator(operators, token):
+      return processOperator(operators, stack, result, token);
+    case token === '(':
+      return stateTransition(processOpeningParenthesis(stack, token), result);
+    case token === ')':
+      return processClosingParenthesis(stack, result);
+    default:
+      return stateTransition(stack, processOperand(result, token))
+
   }
 }
 
