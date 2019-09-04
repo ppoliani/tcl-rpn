@@ -126,7 +126,7 @@ const postfix = (infix, options={}) => {
 
 const infix = (postfix, options={}) => {
   const {operators =  [
-    {name: 'AND', precedence: 1},
+    {name: 'AND', precedence: 2},
     {name: 'OR', precedence: 1}
   ]} = options;
 
@@ -158,6 +158,7 @@ const infix = (postfix, options={}) => {
 
   return peek(stack);
 }
+
 
 module.exports = {
   postfix,
